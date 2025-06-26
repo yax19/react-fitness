@@ -4,6 +4,7 @@ import StopwatchModal from '../components/StopwatchModal';
 import RestTimerModal from '../components/RestTimerModal';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import EditWorkoutModal from '../components/EditWorkoutModal';
 
 
 function Dashboard() {
@@ -14,6 +15,7 @@ function Dashboard() {
 const [showPR, setShowPR] = useState(false);
 const [showCalendar, setShowCalendar] = useState(false);
 const [showWheel, setShowWheel] = useState(false);
+const [editWorkout, setEditWorkout] = useState(null);
 
 function toggleTheme() {
   const next = theme === 'dark' ? 'light' : 'dark';
@@ -193,21 +195,32 @@ const [showRestTimer, setShowRestTimer] = useState(false);
       <div className="section-card">
         <h2>Recent Workouts</h2>
         <button onClick={() => navigate('/add-workout')} className="nav-button">Add New Workout</button>
-        {workouts.slice(0, 3).map((workout) => (
-          <div key={workout._id} className="workout-card">
-            <h3>{workout.name}</h3>
-            <p>{workout.type} | {workout.sets} sets | {workout.reps} reps | {workout.duration} mins</p>
-            <button className="delete-button" onClick={() => handleDelete(workout._id)}>Delete</button>
-          </div>
-        ))}
+      {workouts.slice(0, 3).map((w) => (
+  <div key={w._id} className="workout-card">
+    <h3>{w.name}</h3>
+    <p>{w.type} | {w.sets} sets | {w.reps} reps | {w.duration} mins</p>
+    <button className="delete-button" onClick={() => handleDelete(w._id)}>Delete</button>
+    <button className="edit-button" onClick={() => setEditWorkout(w)}>✏️ Edit</button>
+  </div>
+))}
 
 <div className="bottom-nav">
-  <button onClick={() => navigate('/dashboard')}>🏠</button>
+  <button onClick={() => navigate('/')}>🏠</button>
   <button onClick={toggleTheme}>🎨</button>
   <button onClick={() => setShowPR(true)}>🏆</button>
   <button onClick={() => setShowCalendar(true)}>📅</button>
-  <button onClick={() => setShowWheel(true)}>🎡</button>
+  <button onClick={() => navigate('/challenge')}>🎡</button>
 </div>
+
+{editWorkout && (
+  <EditWorkoutModal
+    workout={editWorkout}
+    onClose={() => setEditWorkout(null)}
+    onUpdate={(updated) => {
+      setWorkouts(prev => prev.map(w => w._id === updated._id ? updated : w));
+    }}
+  />
+)}
 
 {showPR && (
   <div className="modal-overlay">
