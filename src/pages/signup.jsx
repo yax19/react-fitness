@@ -14,17 +14,17 @@ function Signup() {
     e.preventDefault();
     setError('');
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      });
+      const res = await fetch('http://localhost:3000/api/auth/signup', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(form)
+});
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.msg || 'Signup failed');
 
       localStorage.setItem('token', data.token);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       setError(err.message);
     }
